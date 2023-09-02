@@ -19,6 +19,10 @@ ruamel-yaml = "^0.17.32"
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.0"
 
+
+[tool.poetry.group.pylint.dependencies]
+ruff = "^0.0.287"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
