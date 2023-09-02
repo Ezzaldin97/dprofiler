@@ -40,7 +40,7 @@ class DataProfiler(ScanData):
     def __new__(self, path:Optional[str] = None):
         message.printit("new data-profile created successfully.",
                         "info")
-        return super().__new__(self)
+        return super().__new__()
 
     def __init__(self, path:Optional[str] = None) -> None:
         super().__init__(self)

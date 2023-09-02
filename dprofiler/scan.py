@@ -7,6 +7,8 @@ class ScanData:
     Base Class to inherit methods from, read different data-formats,
     and calculate different quality measures.
     """
+    def __init__(self) -> None:
+        pass
     @staticmethod
     def calc_profile(file_path:str,
                      df:pl.DataFrame,
