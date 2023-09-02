@@ -3,6 +3,7 @@ name = "dprofiler"
 version = "0.1.0"
 description = "profile tabular datasets, manage automatic validation for new datasets, automatic handling for quality issues."
 authors = ["Ezzaldin97 <kingtal632@yahoo.com>"]
+repository = "https://github.com/Ezzaldin97/dprofiler"
 license = "LICENSE"
 readme = "README.md"
 
