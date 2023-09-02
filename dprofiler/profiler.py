@@ -9,6 +9,33 @@ from .utils import Message
 message = Message()
 
 class DataProfiler:
+    """
+    Create a dataset profile as .yml file that can be used
+    in many different senarios like validate, and check quality
+    of similar datasets in production or test/validation datasets,
+    also create data cleaning and automatic transformation pipeline
+    to be used in certain conditions based on dataset.
+
+    creating an instance of DataProfiler will automatically create a directory on 
+    your current working directory(default), or any other path on your
+    system that will hold .yml files of datasets.
+
+    all profiles that will be created using this instance will be in 
+    this directory.
+
+    Parameters
+    ----------
+    path : path of the directory that holds all data-profiles .yml files.
+
+    Attributes
+    ----------
+    cwd : current working directory.
+
+    profiler_path : path of the directory that holds all data-profiles .yml files
+    if passed as a parameter to DataProfiler, else it will be in the current working directory.
+
+    profiler_config : path of the directory in your system.
+    """
     def __new__(self, path:Optional[str] = None):
         message.printit("new data-profile created successfully.",
                         "info")
@@ -43,6 +70,32 @@ class DataProfiler:
     def calc_profile(file_path:str,
                      df:pl.DataFrame,
                      unique_id:str) -> Dict:
+        """
+        calculate the profile of the tabular dataset using polars,
+        profile measurements:
+        - file path on your system
+        - number of columns of dataset.
+        - number of records.
+        - columns in dataset.
+        - schema of the dataset (column:data-type).
+        - unique identifier of the dataset.
+        - all string-type columns.
+        - all numeric-type columns.
+        - range of numeric columns (min, max).
+        - number of unique values in string-type columns.
+        - number of missing records in columns.
+        - number of duplicate records.
+
+        Parameters
+        ----------
+        file_path : path of tabular dataset.
+        df : polars dataframe.
+        unique_id : unique identifier name in dataset.
+
+        Returns
+        -------
+        dictionary that holds all data of profile.
+        """
         cols:List[str] = df.columns
         schema:Dict = {col:f"{dtype}" for col, dtype in df.schema.items()}
         n_cols:int = df.width
@@ -77,6 +130,20 @@ class DataProfiler:
                       file_path:str,
                       unique_identifier:Optional[str] = None,
                       sep:str = ",") -> Dict:
+        """
+        scan csv file and returns dictionary that holds all
+        information of profile .yml file.
+
+        Parameters
+        ----------
+        file_path : path of tabular dataset.
+        unique_identifier : unique identifier name in dataset.
+        sep: separator of file, default is ','
+
+        Returns
+        -------
+        dictionary that holds all data of profile.
+        """
         df = pl.read_csv(file_path,
                          ignore_errors = True,
                          separator = sep)
@@ -87,6 +154,19 @@ class DataProfiler:
     def scan_parquet_file(self,
                           file_path:str,
                           unique_identifier:Optional[str] = None) -> Dict:
+        """
+        scan parquet file and returns dictionary that holds all
+        information of profile .yml file.
+
+        Parameters
+        ----------
+        file_path : path of tabular dataset.
+        unique_identifier : unique identifier name in dataset.
+
+        Returns
+        -------
+        dictionary that holds all data of profile.
+        """
         df = pl.read_parquet(file_path)
         return DataProfiler.calc_profile(file_path=file_path,
                                          df = df,
@@ -95,6 +175,19 @@ class DataProfiler:
     def scan_json_file(self,
                        file_path:str,
                        unique_identifier:Optional[str] = None) -> Dict:
+        """
+        scan json file and returns dictionary that holds all
+        information of profile .yml file.
+
+        Parameters
+        ----------
+        file_path : path of tabular dataset.
+        unique_identifier : unique identifier name in dataset.
+
+        Returns
+        -------
+        dictionary that holds all data of profile.
+        """
         df = pl.read_json(file_path)
         return DataProfiler.calc_profile(file_path=file_path,
                                          df = df,
@@ -104,6 +197,20 @@ class DataProfiler:
                         file_path:str,
                         sheet_name:str,
                         unique_identifier:Optional[str] = None) -> Dict:
+        """
+        scan csv file and returns dictionary that holds all
+        information of profile .yml file.
+
+        Parameters
+        ----------
+        file_path : path of tabular dataset.
+        sheet_name : sheet name of the dataset in Excel file.
+        unique_identifier : unique identifier name in dataset.
+
+        Returns
+        -------
+        dictionary that holds all data of profile.
+        """
         df = pl.read_excel(file_path, sheet_name = sheet_name)
         return DataProfiler.calc_profile(file_path=file_path,
                                          df = df,
@@ -113,6 +220,17 @@ class DataProfiler:
                        data_profile:Dict,
                        file_name:str,
                        override:Optional[str] = None) -> None:
+        """
+        create .yml file of the dataset, that will contain all information
+        of the dataset.
+
+        Parameters
+        ----------
+        data_profile : dictionary that holds all information of dataset.
+        file_name : file name of the .yml file to avoid duplication issues.
+        override : this is the option to override the information in 
+        .yml file if exist and rewrite the profile again.
+        """
         if not (file_name.endswith(".yml") or file_name.endswith(".yaml")):
             file_name = file_name+".yml"
         if self.profiler_config.joinpath(file_name).exists():
@@ -134,6 +252,13 @@ class DataProfiler:
 
     def del_profile(self, 
                     file_name:str) -> None:
+        """
+        delete .yml profile.
+
+        Parameters
+        ----------
+        file_name : file name that will be deleted.
+        """
         try:
             if not (file_name.endswith(".yml") or file_name.endswith(".yaml")):
                 file_name = file_name+".yml"
