@@ -38,7 +38,7 @@ class DataProfiler(ScanData):
     profiler_config : path of the directory in your system.
     """
     def __init__(self, path:Optional[str] = None) -> None:
-        super().__init__(self)
+        super().__init__()
         self.cwd = Path(os.getcwd())
         def _profiler_path() -> Path:
             if path:
