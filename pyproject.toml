@@ -11,7 +11,6 @@ readme = "README.md"
 python = "^3.10"
 polars = {version = "^0.19.0", extras = ["all"]}
 pyyaml = "^6.0.1"
-pydantic = "^2.2.0"
 pathlib = "^1.0"
 ruamel-yaml = "^0.17.32"
 
