@@ -37,11 +37,6 @@ class DataProfiler(ScanData):
 
     profiler_config : path of the directory in your system.
     """
-    def __new__(self, path:Optional[str] = None):
-        message.printit("new data-profile created successfully.",
-                        "info")
-        return super().__new__()
-
     def __init__(self, path:Optional[str] = None) -> None:
         super().__init__(self)
         self.cwd = Path(os.getcwd())
@@ -57,6 +52,8 @@ class DataProfiler(ScanData):
                 profiler_dir = self.profiler_path.joinpath(".dprofiler")
                 if not profiler_dir.exists():
                     profiler_dir.mkdir()
+                    message.printit("new data-profile created successfully.",
+                                    "info")
                 else:
                     message.printit("profiler already exists",
                                     "warn")
