@@ -266,13 +266,50 @@ class QTest(ScanData):
                 counter+=1
             else:
                 break
-        print(counter)
         return True if counter == len(self.profile["unique-categorical-values"]) else False
     
     def check_unique_categories(self,
                                 test_profile:Dict
                                 ) -> bool:
-        pass
+        counter = 0
+        for col in self.profile["unique-categorical-values"].keys():
+            if test_profile["unique-categorical-values"][col]\
+                  == self.profile["unique-categorical-values"][col]:
+                counter+=1
+            else:
+                break
+        return True if counter == len(self.profile["unique-categorical-values"])\
+              else False
+    
+    def check_missing_values(self,
+                             test_profile:Dict,
+                             max_thresh:Optional[int] = None
+                             ) -> bool:
+        counter = 0
+        for col in self.profile["missing-values"].keys():
+            if max_thresh:
+                if test_profile["missing-values"][col]\
+                  <= max_thresh:
+                    counter+=1
+                else:
+                    break
+            else:
+                if test_profile["missing-values"][col]\
+                  <= self.profile["missing-values"][col]:
+                    counter+=1
+                else:
+                    break
+        return True if counter == len(self.profile["missing-values"])\
+              else False
+    
+    def check_row_duplicates(self,
+                             test_profile:Dict
+                             ) -> bool:
+        if self.profile["duplicate_records"] == 0:
+            if test_profile["duplicate_records"] == 0:
+                return True
+            return False
+        return True
 
 
     
