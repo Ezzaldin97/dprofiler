@@ -21,10 +21,10 @@ pip install dprofiler
 ```
 ## Dependencies
 
-- Polars
-- PyYAML
-- Pathlib
-- rumamel.yaml
+- Polars(>=0.19.0 <0.20.0)
+- PyYAML(>=6.0.1 <7.0.0)
+- Pathlib(>=1.0 <2.0)
+- rumamel.yaml(>=0.17.32 <0.18.0)
 
 ## Usage
 
