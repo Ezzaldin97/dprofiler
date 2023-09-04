@@ -7,6 +7,23 @@ import yaml
 message = Message()
 
 class QTest(ScanData):
+    """
+    all quality checks test cases that is needed to check quality of production(test)
+    datasets, and how it is similar to development(train) datasets.
+
+    inherit all methods from ScanData to scan and produce profile like saved profiles in
+    profiler.
+
+    Parameters
+    ----------
+    profile_path: path of the .yml saved profile.
+
+    Attributes
+    ----------
+    profile: dictionary of the saved .yml profile.
+
+    profile_path: path of the .yml saved profile.
+    """
     def __init__(self,
                  profile_path:Path) -> None:
         super().__init__()
@@ -19,6 +36,19 @@ class QTest(ScanData):
         
     def check_number_of_columns(self,
                                 test_profile:Dict) -> bool:
+        """
+        check the number of columns in test dataset, if it matches
+        the number of columns in reference dataset that have saved
+        profile, then it return True else False.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if self.profile["number-of-columns"] == test_profile["number-of-columns"]:
             return True
         else:
@@ -27,6 +57,22 @@ class QTest(ScanData):
     def check_min_number_of_records(self,
                                     test_profile:Dict,
                                     min_threshold:Optional[int] = None) -> bool:
+        """
+        check the number of records in test datasets, there are two
+        options either to add minimum threshold of acceptable number
+        of records or to let the minimum number of records greater than or
+        equal to number of records in reference dataset.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        min_thresh: the acceptable minimum number of records
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if min_threshold:
             if self.profile["number-of-records"] >= min_threshold:
                 return True
@@ -41,6 +87,22 @@ class QTest(ScanData):
     def check_max_number_of_records(self,
                                     test_profile:Dict,
                                     max_threshold:Optional[int] = None) -> bool:
+        """
+        check the number of records in test datasets, there are two
+        options either to add maximum threshold of acceptable number
+        of records or to let the maximum number of records less than or
+        equal to number of records in reference dataset.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        max_thresh: the acceptable maximum number of records
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if max_threshold:
             if self.profile["number-of-records"] <= max_threshold:
                 return True
@@ -54,6 +116,19 @@ class QTest(ScanData):
             
     def check_columns(self,
                       test_profile:Dict) -> bool:
+        """
+        check the column names that exist in test dataset,
+        and compare it to reference dataset, it both are identical
+        then returns True else False.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if len(self.profile["columns"]) == len(test_profile["columns"]):
             counter = 0
             for idx in range(len(self.profile["columns"])):
@@ -67,6 +142,18 @@ class QTest(ScanData):
     
     def check_schema(self,
                      test_profile:Dict) -> bool:
+        """
+        check if test dataset schema is identical to 
+        reference dataset schema.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if len(self.profile["schema"]) == len(test_profile["schema"]):
             counter = 0
             for idx in range(len(self.profile["schema"])):
@@ -81,6 +168,17 @@ class QTest(ScanData):
 
     def check_uid(self,
                   test_profile:Dict) -> bool:
+        """
+        check if reference and test datasets have the same id.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if self.profile["unique-identifier"]\
               == test_profile["unique-identifier"]:
             return True
@@ -88,6 +186,17 @@ class QTest(ScanData):
     
     def check_numeric_columns(self,
                               test_profile:Dict) -> bool:
+        """
+        check if reference and test datasets have the same numerical columns.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if len(self.profile["numeric-columns"])\
             == len(test_profile["numeric-columns"]):
             counter = 0
@@ -103,6 +212,17 @@ class QTest(ScanData):
     
     def check_categorical_columns(self,
                                   test_profile:Dict) -> bool:
+        """
+        check if reference and test datasets have the same categorical columns.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if len(self.profile["categorical-columns"])\
             == len(test_profile["categorical-columns"]):
             counter = 0
@@ -122,6 +242,24 @@ class QTest(ScanData):
                                    col:Optional[Union[List[str],
                                                       str]] = None
                                    ) -> bool:
+        """
+        check if test numerical columns aren't below minimum threshold of
+        reference numerical columns or defined threshold.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        min_threshold: minimum threshold that all numeric column values
+        must be above or equal to it.
+
+        col: list of columns or column name to check, if not specified,
+        will check all numeric columns.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if col:
             if isinstance(col, str):
                 if col in self.profile["numeric-columns-range"].keys():
@@ -191,6 +329,24 @@ class QTest(ScanData):
                                    col:Optional[Union[List[str],
                                                       str]] = None
                                    ) -> bool:
+        """
+        check if test numerical columns aren't above maximum threshold of
+        reference numerical columns or defined threshold.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        max_threshold: maximum threshold that all numeric column values
+        must be below or equal to it.
+
+        col: list of columns or column name to check, if not specified,
+        will check all numeric columns.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if col:
             if isinstance(col, str):
                 if col in self.profile["numeric-columns-range"].keys():
@@ -260,6 +416,22 @@ class QTest(ScanData):
                                test_profile:Dict,
                                max_thresh:int = 10
                                ) -> bool:
+        """
+        check that categorical columns distinct values aren't above 
+        a maximum threshold to avoid high cardinality problems in 
+        production.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        max_threshold: maximum threshold that all categorical column values
+        must be below or equal to it.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         counter = 0
         for col in test_profile["unique-categorical-values"].keys():
             if test_profile["unique-categorical-values"][col] <= max_thresh:
@@ -271,6 +443,19 @@ class QTest(ScanData):
     def check_unique_categories(self,
                                 test_profile:Dict
                                 ) -> bool:
+        """
+        check that number of distinct values in test categorical columns
+        is equal to number of distinct values in reference ccategorical
+        columns.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         counter = 0
         for col in self.profile["unique-categorical-values"].keys():
             if test_profile["unique-categorical-values"][col]\
@@ -285,6 +470,20 @@ class QTest(ScanData):
                              test_profile:Dict,
                              max_thresh:Optional[int] = None
                              ) -> bool:
+        """
+        check that missing values in columns aren't exceeded acceptable 
+        maximum threshold or number of missing values in reference columns.
+
+        Parameters
+        ----------
+        test_profile: Dcitionary of the test dataset.
+
+        max_thresh: maximum number of records that are accepted to be missing.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         counter = 0
         for col in self.profile["missing-values"].keys():
             if max_thresh:
@@ -305,6 +504,17 @@ class QTest(ScanData):
     def check_row_duplicates(self,
                              test_profile:Dict
                              ) -> bool:
+        """
+        check if there are full-row duplicates in test datasets.
+
+        Parameters
+        ----------
+        test_profile: Dictionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
         if self.profile["duplicate_records"] == 0:
             if test_profile["duplicate_records"] == 0:
                 return True
