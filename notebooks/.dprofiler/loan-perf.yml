@@ -1,0 +1,72 @@
+file: ../datasets/loan-perf.csv
+number-of-columns: 10
+number-of-records: 4368
+columns:
+  - customerid
+  - systemloanid
+  - loannumber
+  - approveddate
+  - creationdate
+  - loanamount
+  - totaldue
+  - termdays
+  - referredby
+  - good_bad_flag
+schema:
+  customerid: Utf8
+  systemloanid: Int64
+  loannumber: Int64
+  approveddate: Utf8
+  creationdate: Utf8
+  loanamount: Float64
+  totaldue: Float64
+  termdays: Int64
+  referredby: Utf8
+  good_bad_flag: Utf8
+unique-identifier: customerid
+categorical-columns:
+  - customerid
+  - approveddate
+  - creationdate
+  - referredby
+  - good_bad_flag
+numeric-columns:
+  - systemloanid
+  - loannumber
+  - loanamount
+  - totaldue
+  - termdays
+numeric-columns-range:
+  systemloanid:
+    - 301958485
+    - 302004050
+  loannumber:
+    - 2
+    - 27
+  loanamount:
+    - 10000.0
+    - 60000.0
+  totaldue:
+    - 10000.0
+    - 68100.0
+  termdays:
+    - 15
+    - 90
+unique-categorical-values:
+  customerid: 4368
+  approveddate: 4362
+  creationdate: 4364
+  referredby: 522
+  good_bad_flag: 2
+missing-values:
+  customerid: 0
+  systemloanid: 0
+  loannumber: 0
+  approveddate: 0
+  creationdate: 0
+  loanamount: 0
+  totaldue: 0
+  termdays: 0
+  referredby: 3781
+  good_bad_flag: 0
+duplicate_records: 0
