@@ -233,7 +233,8 @@ class QTest(ScanData):
                     continue
                 else:
                     break
-            return True if counter == len(self.profile["categorical-columns"]) else False
+            return True if counter == len(self.profile["categorical-columns"])\
+                  else False
         return False
     
     def check_numeric_below_thresh(self,
@@ -311,7 +312,8 @@ class QTest(ScanData):
                         continue
                     else:
                         break
-                return True if counter == len(self.profile["numeric-columns-range"].keys()) else False
+                return True if counter == len(self.profile["numeric-columns-range"]\
+                                              .keys()) else False
             else:
                 counter = 0
                 for val in self.profile["numeric-columns-range"].keys():
@@ -321,7 +323,8 @@ class QTest(ScanData):
                         continue
                     else:
                         break
-                return True if counter == len(self.profile["numeric-columns-range"].keys()) else False
+                return True if counter == len(self.profile["numeric-columns-range"]\
+                                              .keys()) else False
 
     def check_numeric_above_thresh(self,
                                    test_profile:Dict,
@@ -400,7 +403,8 @@ class QTest(ScanData):
                         continue
                     else:
                         break
-                return True if counter == len(self.profile["numeric-columns-range"].keys()) else False
+                return True if counter == len(self.profile["numeric-columns-range"]\
+                                              .keys()) else False
             else:
                 counter = 0
                 for val in self.profile["numeric-columns-range"].keys():
@@ -410,7 +414,8 @@ class QTest(ScanData):
                         continue
                     else:
                         break
-                return True if counter == len(self.profile["numeric-columns-range"].keys()) else False
+                return True if counter == len(self.profile["numeric-columns-range"]\
+                                              .keys()) else False
 
     def check_high_cardinality(self,
                                test_profile:Dict,
@@ -438,7 +443,8 @@ class QTest(ScanData):
                 counter+=1
             else:
                 break
-        return True if counter == len(self.profile["unique-categorical-values"]) else False
+        return True if counter == len(self.profile["unique-categorical-values"])\
+              else False
     
     def check_unique_categories(self,
                                 test_profile:Dict
