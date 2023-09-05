@@ -265,12 +265,12 @@ class QTest(ScanData):
                 if col in self.profile["numeric-columns-range"].keys():
                     if min_thresh:
                         if test_profile["numeric-columns-range"][col][0] \
-                            < min_thresh:
+                            >= min_thresh:
                             return True
                         return False
                     else:
                         if test_profile["numeric-columns-range"][col][0] \
-                            < self.profile["numeric-columns-range"][col][0]:
+                            >= self.profile["numeric-columns-range"][col][0]:
                             return True
                         return False
                 return False
@@ -280,7 +280,7 @@ class QTest(ScanData):
                     for val in col:
                         if col in self.profile["numeric-columns-range"].keys():
                             if test_profile["numeric-columns-range"][col][0] \
-                                < min_thresh:
+                                >= min_thresh:
                                 counter+=1
                                 continue
                             else:
@@ -293,7 +293,7 @@ class QTest(ScanData):
                     for val in col:
                         if col in self.profile["numeric-columns-range"].keys():
                             if test_profile["numeric-columns-range"][col][0] \
-                                < self.profile["numeric-columns-range"][col][0]:
+                                >= self.profile["numeric-columns-range"][col][0]:
                                 counter+=1
                                 continue
                             else:
@@ -306,7 +306,7 @@ class QTest(ScanData):
                 counter = 0
                 for val in self.profile["numeric-columns-range"].keys():
                     if test_profile["numeric-columns-range"][val][0] \
-                        < min_thresh:
+                        >= min_thresh:
                         counter+=1
                         continue
                     else:
@@ -316,7 +316,7 @@ class QTest(ScanData):
                 counter = 0
                 for val in self.profile["numeric-columns-range"].keys():
                     if test_profile["numeric-columns-range"][val][0] \
-                        < self.profile["numeric-columns-range"][val][0]:
+                        >= self.profile["numeric-columns-range"][val][0]:
                         counter+=1
                         continue
                     else:
@@ -352,12 +352,12 @@ class QTest(ScanData):
                 if col in self.profile["numeric-columns-range"].keys():
                     if max_thresh:
                         if test_profile["numeric-columns-range"][col][1] \
-                            > max_thresh:
+                            <= max_thresh:
                             return True
                         return False
                     else:
                         if test_profile["numeric-columns-range"][col][1] \
-                            > self.profile["numeric-columns-range"][col][1]:
+                            <= self.profile["numeric-columns-range"][col][1]:
                             return True
                         return False
                 return False
@@ -367,7 +367,7 @@ class QTest(ScanData):
                     for val in col:
                         if col in self.profile["numeric-columns-range"].keys():
                             if test_profile["numeric-columns-range"][col][1] \
-                                > max_thresh:
+                                <= max_thresh:
                                 counter+=1
                                 continue
                             else:
@@ -381,7 +381,7 @@ class QTest(ScanData):
                     for val in col:
                         if col in self.profile["numeric-columns-range"].keys():
                             if test_profile["numeric-columns-range"][col][1] \
-                                > self.profile["numeric-columns-range"][col][1]:
+                                <= self.profile["numeric-columns-range"][col][1]:
                                 counter+=1
                                 continue
                             else:
@@ -395,7 +395,7 @@ class QTest(ScanData):
                 counter = 0
                 for val in self.profile["numeric-columns-range"].keys():
                     if test_profile["numeric-columns-range"][val][1] \
-                        > max_thresh:
+                        <= max_thresh:
                         counter+=1
                         continue
                     else:
@@ -405,7 +405,7 @@ class QTest(ScanData):
                 counter = 0
                 for val in self.profile["numeric-columns-range"].keys():
                     if test_profile["numeric-columns-range"][val][1] \
-                        > self.profile["numeric-columns-range"][val][1]:
+                        <= self.profile["numeric-columns-range"][val][1]:
                         counter+=1
                         continue
                     else:
