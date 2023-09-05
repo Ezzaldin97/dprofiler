@@ -28,7 +28,7 @@ pip install dprofiler
 
 ## Usage
 
-check the [notebook](notebooks/usage.ipynb) that contains everything about how to use **DataProfiler** module in profiling datasets, and how to use **QTest** module to create quality check tests.
+check the [notebook](notebooks/intro.ipynb) that contains everything about how to use **DataProfiler** module in profiling datasets, and how to use **QTest** module to create quality check tests.
 
 ## Contributing
 
