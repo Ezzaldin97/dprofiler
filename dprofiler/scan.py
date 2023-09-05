@@ -2,17 +2,18 @@ import polars as pl
 import polars.selectors as cs
 from typing import Dict, Optional, List
 
+
 class ScanData:
     """
     Base Class to inherit methods from, read different data-formats,
     and calculate different quality measures.
     """
+
     def __init__(self) -> None:
         pass
+
     @staticmethod
-    def calc_profile(file_path:str,
-                     df:pl.DataFrame,
-                     unique_id:str) -> Dict:
+    def calc_profile(file_path: str, df: pl.DataFrame, unique_id: str) -> Dict:
         """
         calculate the profile of the tabular dataset using polars,
         profile measurements:
@@ -39,40 +40,40 @@ class ScanData:
         -------
         dictionary that holds all data of profile.
         """
-        cols:List[str] = df.columns
-        schema:Dict = {col:f"{dtype}" for col, dtype in df.schema.items()}
-        n_cols:int = df.width
-        n_rows:int = df.height
-        cat_cols:List[str] = df.select(cs.string()).columns
-        num_cols:List[str] = df.select(cs.numeric()).columns
+        cols: List[str] = df.columns
+        schema: Dict = {col: f"{dtype}" for col, dtype in df.schema.items()}
+        n_cols: int = df.width
+        n_rows: int = df.height
+        cat_cols: List[str] = df.select(cs.string()).columns
+        num_cols: List[str] = df.select(cs.numeric()).columns
         unique_val_df = df.select(pl.col(pl.Utf8).n_unique())
-        n_unique = {col:unique_val_df.select(col).item()\
-                   for col in unique_val_df.columns}
-        null_cols = {col:df.select(col).null_count().item()\
-                    for col in cols}
+        n_unique = {
+            col: unique_val_df.select(col).item() for col in unique_val_df.columns
+        }
+        null_cols = {col: df.select(col).null_count().item() for col in cols}
         duplicate_records = df.is_duplicated().sum()
-        num_cols_range = {col:[df.select(col).min().item(),
-                               df.select(col).max().item()]\
-                          for col in num_cols}
+        num_cols_range = {
+            col: [df.select(col).min().item(), df.select(col).max().item()]
+            for col in num_cols
+        }
         return {
             "file": file_path,
-            "number-of-columns":n_cols,
-            "number-of-records":n_rows,
-            "columns":cols,
-            "schema":schema,
+            "number-of-columns": n_cols,
+            "number-of-records": n_rows,
+            "columns": cols,
+            "schema": schema,
             "unique-identifier": unique_id,
             "categorical-columns": cat_cols,
             "numeric-columns": num_cols,
             "numeric-columns-range": num_cols_range,
             "unique-categorical-values": n_unique,
             "missing-values": null_cols,
-            "duplicate_records": duplicate_records
+            "duplicate_records": duplicate_records,
         }
-    
-    def scan_csv_file(self, 
-                      file_path:str,
-                      unique_identifier:Optional[str] = None,
-                      sep:str = ",") -> Dict:
+
+    def scan_csv_file(
+        self, file_path: str, unique_identifier: Optional[str] = None, sep: str = ","
+    ) -> Dict:
         """
         scan csv file and returns dictionary that holds all
         information of profile .yml file.
@@ -87,16 +88,14 @@ class ScanData:
         -------
         dictionary that holds all data of profile.
         """
-        df = pl.read_csv(file_path,
-                         ignore_errors = True,
-                         separator = sep)
-        return ScanData.calc_profile(file_path=file_path,
-                                         df = df,
-                                         unique_id=unique_identifier)
-    
-    def scan_parquet_file(self,
-                          file_path:str,
-                          unique_identifier:Optional[str] = None) -> Dict:
+        df = pl.read_csv(file_path, ignore_errors=True, separator=sep)
+        return ScanData.calc_profile(
+            file_path=file_path, df=df, unique_id=unique_identifier
+        )
+
+    def scan_parquet_file(
+        self, file_path: str, unique_identifier: Optional[str] = None
+    ) -> Dict:
         """
         scan parquet file and returns dictionary that holds all
         information of profile .yml file.
@@ -111,13 +110,13 @@ class ScanData:
         dictionary that holds all data of profile.
         """
         df = pl.read_parquet(file_path)
-        return ScanData.calc_profile(file_path=file_path,
-                                         df = df,
-                                         unique_id=unique_identifier)
-    
-    def scan_json_file(self,
-                       file_path:str,
-                       unique_identifier:Optional[str] = None) -> Dict:
+        return ScanData.calc_profile(
+            file_path=file_path, df=df, unique_id=unique_identifier
+        )
+
+    def scan_json_file(
+        self, file_path: str, unique_identifier: Optional[str] = None
+    ) -> Dict:
         """
         scan json file and returns dictionary that holds all
         information of profile .yml file.
@@ -132,14 +131,13 @@ class ScanData:
         dictionary that holds all data of profile.
         """
         df = pl.read_json(file_path)
-        return ScanData.calc_profile(file_path=file_path,
-                                         df = df,
-                                         unique_id=unique_identifier)
-    
-    def scan_excel_file(self,
-                        file_path:str,
-                        sheet_name:str,
-                        unique_identifier:Optional[str] = None) -> Dict:
+        return ScanData.calc_profile(
+            file_path=file_path, df=df, unique_id=unique_identifier
+        )
+
+    def scan_excel_file(
+        self, file_path: str, sheet_name: str, unique_identifier: Optional[str] = None
+    ) -> Dict:
         """
         scan csv file and returns dictionary that holds all
         information of profile .yml file.
@@ -154,7 +152,7 @@ class ScanData:
         -------
         dictionary that holds all data of profile.
         """
-        df = pl.read_excel(file_path, sheet_name = sheet_name)
-        return ScanData.calc_profile(file_path=file_path,
-                                         df = df,
-                                         unique_id=unique_identifier)
+        df = pl.read_excel(file_path, sheet_name=sheet_name)
+        return ScanData.calc_profile(
+            file_path=file_path, df=df, unique_id=unique_identifier
+        )
