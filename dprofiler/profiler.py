@@ -1,7 +1,5 @@
-import polars as pl
-import polars.selectors as cs
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Optional, Dict
 import os
 import ruamel.yaml
 from .utils import Message
@@ -33,7 +31,8 @@ class DataProfiler(ScanData):
     cwd : current working directory.
 
     profiler_path : path of the directory that holds all data-profiles .yml files
-    if passed as a parameter to DataProfiler, else it will be in the current working directory.
+    if passed as a parameter to DataProfiler, else it will be in 
+    the current working directory.
 
     profiler_config : path of the directory in your system.
     """
@@ -59,7 +58,8 @@ class DataProfiler(ScanData):
                                     "warn")
                 return profiler_dir
             except FileNotFoundError:
-                raise FileNotFoundError(f"The system cannot find the path specified:{self.profiler_path}")
+                raise \
+                FileNotFoundError(f"{self.profiler_path} doesn't exist")
         self.profiler_config = _create_config_dir()
     
     def __str__(self) -> str:
@@ -113,7 +113,10 @@ class DataProfiler(ScanData):
                 file_name = file_name+".yml"
             self.profiler_config.joinpath(file_name).unlink()
         except FileNotFoundError:
-            raise FileNotFoundError(f"No Data Profile Exists in profiler with name: {file_name}")
+            raise \
+                FileNotFoundError(
+                    f"No Data Profile Exists in profiler with name: {file_name}"
+                    )
     
     
     

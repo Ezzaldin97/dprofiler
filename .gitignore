@@ -1,2 +1,5 @@
 # ignore any cache file...
 **/__pycache__/
+
+# ruff cache
+.ruff_cache/
