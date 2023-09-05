@@ -1,0 +1,39 @@
+name: Publish dprofiler to PyPi
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v3
+        - name: Set up Python 3.10
+          uses: actions/setup-python@v3
+          with:
+            python-version: "3.10"
+        - name: Install latest version of Poetry
+          run: |
+            curl -sSL https://install.python-poetry.org | python -
+        - name: Add Poetry to $PATH
+          run: |
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+        - name: Get Poetry version
+          run: poetry --version
+        - name: Check pyproject.toml validity
+          run: poetry check --no-interaction
+        - name: Install deps
+          run: |
+            poetry config virtualenvs.in-project true
+            poetry install --no-interaction
+        - name: Lint with black & ruff
+          run: make pylint
+        - name: Run tests
+          run: make test
