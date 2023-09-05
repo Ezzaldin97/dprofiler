@@ -21,6 +21,7 @@ pytest = "^7.4.0"
 
 [tool.poetry.group.pylint.dependencies]
 ruff = "^0.0.287"
+black = "^23.3.0"
 
 
 [tool.poetry.group.dev.dependencies]
