@@ -32,8 +32,10 @@ jobs:
         - name: Install deps
           run: |
             poetry install
+        - name: Activate venv
+          run: poetry shell  
         - name: Lint with black & ruff
           run: |
-            poetry shell && make pylint
+            make pylint
         - name: Run tests
           run: make test
