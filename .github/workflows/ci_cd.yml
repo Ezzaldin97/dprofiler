@@ -34,6 +34,6 @@ jobs:
             poetry install 
         - name: Lint with black & ruff
           run: |
-            make pylint
+            poetry run make pylint
         - name: Run tests
-          run: make test
+          run: poetry run make test
