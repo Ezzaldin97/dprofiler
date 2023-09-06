@@ -69,7 +69,7 @@ class DataProfiler(ScanData):
         return f"Profile of:{self.profiler_path}"
 
     def create_profile(
-        self, data_profile: Dict, file_name: str, override: Optional[str] = None
+        self, data_profile: Dict, file_name: str, override: Optional[bool] = None
     ) -> None:
         """
         create .yml file of the dataset, that will contain all information

@@ -545,3 +545,45 @@ class QTest(ScanData):
                 return True
             return False
         return True
+    
+    def check_if_no_constant_columns(self, test_profile: Dict) -> bool:
+        """
+        check if there are columns that have only one value(constant column)
+        in test dataset.
+
+        Parameters
+        ----------
+        test_profile: Dictionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
+        if len(test_profile["is_constatnt"]) == 0:
+            return True
+        else:
+            return False
+        
+    def check_if_matched_const_columns(self, test_profile: Dict) -> bool:
+        """
+        check if the constant columns in reference profile is
+        identical to test profile.
+
+        Parameters
+        ----------
+        test_profile: Dictionary of the test dataset.
+
+        Returns
+        -------
+        boolen flag (True/False).
+        """
+        if len(self.profile["is_constatnt"]) == 0 and \
+              len(test_profile["is_constatnt"]) == 0:
+            return True
+        else:
+            if len(test_profile["is_constatnt"]) != len(self.profile["is_constatnt"]):
+                return False
+            else:
+                if set(test_profile["is_constatnt"]) \
+                    .issubset(self.profile["is_constatnt"]):
+                    return True
