@@ -24,16 +24,14 @@ jobs:
             curl -sSL https://install.python-poetry.org | python -
         - name: Add Poetry to $PATH
           run: |
-            echo "$HOME/.local/bin" >> $GITHUB_PATH
+            echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
         - name: Get Poetry version
           run: poetry --version
         - name: Check pyproject.toml validity
           run: poetry check --no-interaction
         - name: Install deps
           run: |
-            poetry install
-        - name: Activate venv
-          run: poetry shell  
+            poetry install 
         - name: Lint with black & ruff
           run: |
             make pylint
