@@ -1,4 +1,4 @@
-name: Publish dprofiler to PyPi
+name: CI
 
 on:
   push:
