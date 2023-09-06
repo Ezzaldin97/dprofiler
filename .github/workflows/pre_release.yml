@@ -1,0 +1,47 @@
+name: Create Release
+on:
+    push:
+      tags:
+        - 'v*'
+jobs:
+    autorelease:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python 3.10
+              uses: actions/setup-python@v3
+              with:
+                python-version: "3.10"
+            - name: Install latest version of Poetry
+              run: |
+                curl -sSL https://install.python-poetry.org | python -
+            - name: Add Poetry to $PATH
+              run: |
+                echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
+            - name: Add version to environment vars
+              run: |
+                PROJECT_VERSION=$(poetry version --short)
+                echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
+            - name: Check if tag version matches project version
+              run: |
+                TAG=$(git describe HEAD --tags --abbrev=0)
+                echo $TAG
+                echo $PROJECT_VERSION
+                if [[ "$TAG" != "v$PROJECT_VERSION" ]]; then exit 1; fi
+            - name: Lint with black & ruff
+              run: |
+                poetry run make pylint
+            - name: Run tests
+              run: poetry run make test
+            - name: Build Artifacts
+              run: poetry build
+            - name: Release Notes
+              run: git log $(git describe HEAD~ --tags --abbrev=0)..HEAD --pretty='format:* %h %s%n  * %an <%ae>' --no-merges >> ".github/RELEASE-TEMPLATE.md"
+            - name: Create Release Draft
+              uses: softprops/action-gh-release@v1
+              with:
+                body_path: ".github/RELEASE-TEMPLATE.md"
+                draft: true
+                files: |
+                  dist/dprofiler-$PROJECT_VERSION-py3-none-any.whl
+                  dist/dprofiler-$PROJECT_VERSION.tar.gz
