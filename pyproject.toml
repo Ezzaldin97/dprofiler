@@ -34,7 +34,7 @@ src = ["dprofiler"]
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401", "E402"]
-"dprofiler/tests/*.py" = ["E402", "E712"]
+"qprofiler/tests/*.py" = ["E402", "E712"]
 
 [tool.black]
 line-length = 88

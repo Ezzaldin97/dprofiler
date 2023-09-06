@@ -4,7 +4,7 @@ import os
 import sys
 
 sys.path.append(os.path.abspath("../.."))
-from dprofiler import DataProfiler
+from qprofiler import DataProfiler
 
 DATA_PATH = "datasets/loan-perf.csv"
 
