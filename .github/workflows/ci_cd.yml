@@ -34,6 +34,6 @@ jobs:
             poetry config virtualenvs.in-project true
             poetry install --no-interaction
         - name: Lint with black & ruff
-          run: make pylint
+          run: make lint
         - name: Run tests
           run: make test
