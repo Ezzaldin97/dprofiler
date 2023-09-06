@@ -33,6 +33,7 @@ jobs:
           run: |
             poetry install
         - name: Lint with black & ruff
-          run: make pylint
+          run: |
+            poetry shell && make pylint
         - name: Run tests
           run: make test
