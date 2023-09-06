@@ -1,5 +1,5 @@
-lint:
-	black --check --diff . && ruff check --show-source .
-	
+pylint:
+	linting.sh
+
 test:
 	pytest -v
