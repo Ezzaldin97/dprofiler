@@ -1,5 +1,5 @@
 pylint:
-	linting.sh
+	bash linting.sh
 
 test:
 	pytest -v
