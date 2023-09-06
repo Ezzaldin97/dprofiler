@@ -31,8 +31,7 @@ jobs:
           run: poetry check --no-interaction
         - name: Install deps
           run: |
-            poetry shell
-            poetry install --no-interaction
+            poetry install
         - name: Lint with black & ruff
           run: make lint
         - name: Run tests
