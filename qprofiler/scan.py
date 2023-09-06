@@ -56,6 +56,8 @@ class ScanData:
             col: [df.select(col).min().item(), df.select(col).max().item()]
             for col in num_cols
         }
+        constant_col = [col for col in df.columns \
+                         if df.select(col).unique().height == 0]
         return {
             "file": file_path,
             "number-of-columns": n_cols,
@@ -69,6 +71,7 @@ class ScanData:
             "unique-categorical-values": n_unique,
             "missing-values": null_cols,
             "duplicate_records": duplicate_records,
+            "is_constatnt": constant_col
         }
 
     def scan_csv_file(

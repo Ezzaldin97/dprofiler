@@ -15,7 +15,7 @@ TEST_DATA_PATH = "datasets/loan-perf-test.csv"
 def profiler() -> DataProfiler:
     profiler = DataProfiler()
     ref = profiler.scan_csv_file(DATA_PATH, unique_identifier="customerid")
-    profiler.create_profile(ref, "reference")
+    profiler.create_profile(ref, "reference", True)
     return profiler
 
 
@@ -71,3 +71,12 @@ def test_if_numeric_below_thresh(checks: QTest, test_profile: Dict) -> None:
         )
         == True
     )
+
+def test_if_no_constant_columns_in_ref(checks: QTest, test_profile: Dict) -> None:
+    assert checks.check_if_no_constant_columns(checks.profile) == True
+
+def test_if_constant_columns_in_test(checks: QTest, test_profile: Dict) -> None:
+    assert checks.check_if_no_constant_columns(test_profile=test_profile) == True
+
+def test_if_matched_constant_columns(checks: QTest, test_profile: Dict) -> None:
+    assert checks.check_if_matched_const_columns(test_profile=test_profile) == True
