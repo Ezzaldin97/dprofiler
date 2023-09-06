@@ -1,6 +1,6 @@
-# dprofiler
+# qprofiler
 
-**dprofiler** is a Python package that provides an intelligent way to create a data quality profile for your development(train) dataset(s) and save it as a reference to use in creating quality check tests and automatic handling cases for production(test) datasets.
+**qprofiler** is a Python package that provides an intelligent way to create a data quality profile for your development(train) dataset(s) and save it as a reference to use in creating quality check tests and automatic handling cases for production(test) datasets.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ The source code is currently hosted on GitHub at:
 Binary installers for the latest released version are available at the [PyPi](https://pypi.org/)
 ```bash
 # PyPi
-pip install dprofiler
+pip install qprofiler
 ```
 ## Dependencies
 
