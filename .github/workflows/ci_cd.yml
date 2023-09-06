@@ -30,7 +30,9 @@ jobs:
         - name: Check pyproject.toml validity
           run: poetry check --no-interaction
         - name: Install deps
-          run: poetry install --no-interaction
+          run: |
+            poetry shell
+            poetry install --no-interaction
         - name: Lint with black & ruff
           run: make lint
         - name: Run tests
