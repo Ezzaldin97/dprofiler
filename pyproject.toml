@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "dprofiler"
+name = "qprofiler"
 version = "0.1.0"
 description = "profile tabular datasets, manage automatic validation for new datasets, automatic handling for quality issues."
 authors = ["Ezzaldin97 <kingtal632@yahoo.com>"]
