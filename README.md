@@ -39,3 +39,8 @@ Please make sure to update tests as appropriate.
 
 ## Licence
 [MIT](LICENSE)
+
+## New in v0.2.1
+
+- Bug Fixes in QTest.
+- Return Messages From Quality Check Tests.
