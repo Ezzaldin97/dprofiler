@@ -13,7 +13,9 @@ class ScanData:
         pass
 
     @staticmethod
-    def calc_profile(file_path: str, df: pl.DataFrame, unique_id: str) -> Dict:
+    def calc_profile(
+        file_path: str, df: pl.DataFrame, unique_id: Optional[str] = None
+    ) -> Dict:
         """
         calculate the profile of the tabular dataset using polars,
         profile measurements:
@@ -29,6 +31,7 @@ class ScanData:
         - number of unique values in string-type columns.
         - number of missing records in columns.
         - number of duplicate records.
+        - number of columns that has only one value.
 
         Parameters
         ----------
@@ -56,8 +59,9 @@ class ScanData:
             col: [df.select(col).min().item(), df.select(col).max().item()]
             for col in num_cols
         }
-        constant_col = [col for col in df.columns \
-                         if df.select(col).unique().height == 0]
+        constant_col = [
+            col for col in df.columns if df.select(col).unique().height == 0
+        ]
         return {
             "file": file_path,
             "number-of-columns": n_cols,
@@ -71,7 +75,7 @@ class ScanData:
             "unique-categorical-values": n_unique,
             "missing-values": null_cols,
             "duplicate_records": duplicate_records,
-            "is_constatnt": constant_col
+            "is_constatnt": constant_col,
         }
 
     def scan_csv_file(

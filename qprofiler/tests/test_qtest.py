@@ -41,42 +41,62 @@ def test_exception_when_wrong_profile_path(profiler: DataProfiler) -> None:
 def test_number_of_columns_true(checks: QTest) -> None:
     # same training data
     ref_profile = checks.profile
-    assert checks.check_number_of_columns(test_profile=ref_profile) == True
+    assert checks.check_number_of_columns(test_profile=ref_profile) == {
+        "msg": "number of columns are identical",
+        "res": True,
+    }
 
 
 def test_number_of_columns_wrong(checks: QTest, test_profile: Dict) -> None:
-    assert checks.check_number_of_columns(test_profile=test_profile) == False
+    assert checks.check_number_of_columns(test_profile=test_profile) == {
+        "msg": "number of columns are different",
+        "res": False,
+    }
 
 
 def test_min_number_of_records(checks: QTest, test_profile: Dict) -> None:
-    assert (
-        checks.check_min_number_of_records(test_profile=test_profile, min_threshold=100)
-        == True
-    )
+    assert checks.check_min_number_of_records(
+        test_profile=test_profile, min_threshold=100
+    ) == {
+        "msg": "number of records are greater than or equal to 100",
+        "res": True,
+    }
 
 
 def test_max_number_of_records(checks: QTest, test_profile: Dict) -> None:
-    assert (
-        checks.check_max_number_of_records(
-            test_profile=test_profile, max_threshold=1000
-        )
-        == False
-    )
+    assert checks.check_max_number_of_records(
+        test_profile=test_profile, max_threshold=1000
+    ) == {
+        "msg": "number of records passed 1000",
+        "res": False,
+    }
 
 
 def test_if_numeric_below_thresh(checks: QTest, test_profile: Dict) -> None:
-    assert (
-        checks.check_numeric_below_thresh(
-            test_profile=test_profile, min_thresh=15, col="termdays"
-        )
-        == True
-    )
+    assert checks.check_numeric_below_thresh(
+        test_profile=test_profile, min_thresh=15, col="termdays"
+    ) == {
+        "msg": "lower bound of termdays is greater than or equal 15.",
+        "res": True,
+    }
 
-def test_if_no_constant_columns_in_ref(checks: QTest, test_profile: Dict) -> None:
-    assert checks.check_if_no_constant_columns(checks.profile) == True
 
-def test_if_constant_columns_in_test(checks: QTest, test_profile: Dict) -> None:
-    assert checks.check_if_no_constant_columns(test_profile=test_profile) == True
+def test_if_no_constant_columns_in_ref(checks: QTest) -> None:
+    assert checks.check_if_no_constant_columns(checks.profile) == {
+        "msg": "dataset has no constant columns",
+        "res": True,
+    }
+
+
+def test_if_no_constant_columns_in_test(checks: QTest, test_profile: Dict) -> None:
+    assert checks.check_if_no_constant_columns(test_profile=test_profile) == {
+        "msg": "dataset has no constant columns",
+        "res": True,
+    }
+
 
 def test_if_matched_constant_columns(checks: QTest, test_profile: Dict) -> None:
-    assert checks.check_if_matched_const_columns(test_profile=test_profile) == True
+    assert checks.check_if_matched_const_columns(test_profile=test_profile) == {
+        "msg": "no constant columns in refernce and test",
+        "res": True,
+    }
