@@ -1,7 +1,8 @@
 from pathlib import Path
 from .utils import Message
 from .scan import ScanData
-from typing import Dict, Optional, List, Union
+from typing import Dict, Optional, List, Union, Callable, Any
+from typing_extensions import Self
 import yaml
 
 message = Message()
@@ -30,13 +31,13 @@ class QTest(ScanData):
         super().__init__()
         try:
             with open(profile_path, "r") as conf:
-                self.profile = yaml.safe_load(conf)
+                self.profile: Dict[str, Any] = yaml.safe_load(conf)
                 self.profile_path: Path = profile_path
         except FileNotFoundError:
             raise FileNotFoundError("no profile in this path")
 
     def check_number_of_columns(
-        self, test_profile: Dict
+        self, test_profile: Dict[str, Any]
     ) -> Dict[str, Union[str, bool]]:
         """
         check the number of columns in test dataset, if it matches
@@ -58,7 +59,7 @@ class QTest(ScanData):
             return {"msg": "number of columns are different", "res": False}
 
     def check_min_number_of_records(
-        self, test_profile: Dict, min_threshold: Optional[int] = None
+        self, test_profile: Dict[str, Any], min_threshold: Optional[int] = None
     ) -> Dict[str, Union[str, bool]]:
         """
         check the number of records in test datasets, there are two
@@ -107,7 +108,7 @@ class QTest(ScanData):
                 }
 
     def check_max_number_of_records(
-        self, test_profile: Dict, max_threshold: Optional[int] = None
+        self, test_profile: Dict[str, Any], max_threshold: Optional[int] = None
     ) -> Dict[str, Union[str, bool]]:
         """
         check the number of records in test datasets, there are two
@@ -149,7 +150,9 @@ class QTest(ScanData):
                     "res": False,
                 }
 
-    def check_columns(self, test_profile: Dict) -> Dict[str, Union[str, bool]]:
+    def check_columns(
+        self, test_profile: Dict[str, Any]
+    ) -> Dict[str, Union[str, bool]]:
         """
         check the column names that exist in test dataset,
         and compare it to reference dataset, it both are identical
@@ -179,7 +182,7 @@ class QTest(ScanData):
             )
         return {"msg": "number of columns aren't identical", "res": False}
 
-    def check_schema(self, test_profile: Dict) -> Dict[str, Union[str, bool]]:
+    def check_schema(self, test_profile: Dict[str, Any]) -> Dict[str, Union[str, bool]]:
         """
         check if test dataset schema is identical to
         reference dataset schema.
@@ -214,7 +217,7 @@ class QTest(ScanData):
             "res": False,
         }
 
-    def check_uid(self, test_profile: Dict) -> Dict[str, Union[str, bool]]:
+    def check_uid(self, test_profile: Dict[str, Any]) -> Dict[str, Union[str, bool]]:
         """
         check if reference and test datasets have the same id.
 
@@ -231,7 +234,9 @@ class QTest(ScanData):
             return {"msg": "matched ID columns", "res": True}
         return {"msg": "different IDs", "res": False}
 
-    def check_numeric_columns(self, test_profile: Dict) -> Dict[str, Union[str, bool]]:
+    def check_numeric_columns(
+        self, test_profile: Dict[str, Any]
+    ) -> Dict[str, Union[str, bool]]:
         """
         check if reference and test datasets have the same numerical columns.
 
@@ -266,7 +271,7 @@ class QTest(ScanData):
         return {"msg": "number of numeric columns aren't identical", "res": False}
 
     def check_categorical_columns(
-        self, test_profile: Dict
+        self, test_profile: Dict[str, Any]
     ) -> Dict[str, Union[str, bool]]:
         """
         check if reference and test datasets have the same categorical columns.
@@ -308,7 +313,7 @@ class QTest(ScanData):
 
     def check_numeric_below_thresh(
         self,
-        test_profile: Dict,
+        test_profile: Dict[str, Any],
         min_thresh: Optional[str] = None,
         col: Optional[Union[List[str], str]] = None,
     ) -> Dict[str, Union[str, bool]]:
@@ -488,7 +493,7 @@ class QTest(ScanData):
 
     def check_numeric_above_thresh(
         self,
-        test_profile: Dict,
+        test_profile: Dict[str, Any],
         max_thresh: Optional[str] = None,
         col: Optional[Union[List[str], str]] = None,
     ) -> Dict[str, Union[str, bool]]:
@@ -671,7 +676,7 @@ class QTest(ScanData):
                 )
 
     def check_high_cardinality(
-        self, test_profile: Dict, max_thresh: int = 10
+        self, test_profile: Dict[str, Any], max_thresh: int = 10
     ) -> Dict[str, Union[str, bool]]:
         """
         check that categorical columns distinct values aren't above
@@ -703,7 +708,7 @@ class QTest(ScanData):
         )
 
     def check_unique_categories(
-        self, test_profile: Dict
+        self, test_profile: Dict[str, Any]
     ) -> Dict[str, Union[str, bool]]:
         """
         check that number of distinct values in test categorical columns
@@ -735,7 +740,7 @@ class QTest(ScanData):
         )
 
     def check_missing_values(
-        self, test_profile: Dict, max_thresh: Optional[int] = None
+        self, test_profile: Dict[str, Any], max_thresh: Optional[int] = None
     ) -> Dict[str, Union[str, bool]]:
         """
         check that missing values in columns aren't exceeded acceptable
@@ -779,7 +784,9 @@ class QTest(ScanData):
             }
         )
 
-    def check_row_duplicates(self, test_profile: Dict) -> Dict[str, Union[str, bool]]:
+    def check_row_duplicates(
+        self, test_profile: Dict[str, Any]
+    ) -> Dict[str, Union[str, bool]]:
         """
         check if there are full-row duplicates in test datasets.
 
@@ -825,7 +832,7 @@ class QTest(ScanData):
             }
 
     def check_if_matched_const_columns(
-        self, test_profile: Dict
+        self, test_profile: Dict[str, Any]
     ) -> Dict[str, Union[str, bool]]:
         """
         check if the constant columns in reference profile is
@@ -859,3 +866,176 @@ class QTest(ScanData):
                         "msg": "constant columns are subset of reference",
                         "res": True,
                     }
+
+
+class QPipeline:
+    """
+    Pipeline of Quality Check Tests.
+
+    Sequential checks a list of Quality Tests,
+    the purpose of pipeline is to provide a list of checks that
+    must be done in production to ensure the quality of the production
+    datasets matches the reference profile.
+
+    Parameters
+    ----------
+    test_obj: Object of QTest.
+
+    test_profile: Dictionary of test datasets profile
+
+    verbose: bool, default = False
+    if True the message returned by each Test will be printed.
+
+    Attributes
+    ----------
+
+    """
+
+    def __init__(
+        self,
+        test_obj: QTest,
+        verbose: bool = False,
+    ) -> None:
+        self.test_obj = test_obj
+        self.verbose = verbose
+        self.tests = []
+        self.__checks = []
+        self.__error_levels = []
+        self.__check_params = []
+
+    def __len__(self) -> int:
+        return len(self.tests)
+
+    @staticmethod
+    def validate_error_level(level: str) -> str:
+        if level in ["error", "warn"]:
+            return level
+        else:
+            raise ValueError("error level isn't valid")
+
+    @staticmethod
+    def validate_checks(
+        checks_obj: QTest, check: Callable[..., Dict[str, Union[str, bool]]]
+    ) -> Callable[..., bool]:
+        if hasattr(checks_obj, check.__name__):
+            return check
+        else:
+            raise TypeError("all steps must be a QTest method.")
+
+    @staticmethod
+    def execute(
+        func: Callable[..., Dict[str, Union[str, bool]]],
+        verbose: bool,
+        error_level: str,
+        **kwargs,
+    ) -> bool:
+        res = func(**kwargs)
+        if verbose:
+            if res["res"]:
+                message.printit(res["msg"])
+            else:
+                message.printit(res["msg"], message_type=error_level)
+        return res["res"]
+
+    def append(
+        self,
+        name: str,
+        check: Callable[..., bool],
+        error_level: str = "error",
+        **kwargs,
+    ) -> Self:
+        """
+        add quality check tests to class instance.
+
+        adding quality check test will stack the test added
+        to the remaining test in order to complete the quality
+        pipeline of tests that needed to check production datasets.
+
+        Parameters
+        ----------
+        name: name of test in pipeline.
+
+        check: QTest method
+        check method to be used for test.
+
+        message_level: message level
+
+        **kwargs: QTest method keyword parameters
+
+        Returns
+        -------
+        QPipeline class instance
+        """
+        valid_check = QPipeline.validate_checks(self.test_obj, check=check)
+        valid_error_level = QPipeline.validate_error_level(level=error_level)
+        self.tests.append(name)
+        self.__checks.append(valid_check)
+        self.__error_levels.append(valid_error_level)
+        self.__check_params.append(kwargs)
+        return self
+
+    def remove_step(self, name: str) -> Self:
+        """
+        remove quality check test from pipeline
+
+        Parameters
+        ----------
+        name: str
+        name of test in pipeline to remove
+
+        Returns
+        -------
+        QPipeline class instance
+        """
+        try:
+            idx = self.tests.index(name)
+            self.tests.remove(name)
+            self.__checks.remove(self.__checks[idx])
+            self.__error_levels.remove(self.__error_levels[idx])
+            self.__check_params.remove(self.__check_params[idx])
+            if self.verbose:
+                message.printit(f"{name} test removed")
+            return self
+        except ValueError:
+            raise ValueError(f"{name} test doesn't exist in pipeline")
+
+    def clear_pipeline(self) -> None:
+        """Remove all Quality Check Tests From Pipeline"""
+        self.tests.clear()
+        self.__checks.clear()
+        self.__error_levels.clear()
+        self.__check_params.clear()
+        if self.verbose:
+            message.printit("all quality checks removed")
+
+    def run(self) -> bool:
+        """
+        runs quality check tests sequentially,
+        if result of one of the quality tests return False
+        then if message level is error then final
+        result of pipeline is False and pipeline failed.
+
+        if one of the tests failed this means that pipeline
+        failed, and quality of test dataset isn't similar to
+        reference profile.
+
+        Returns
+        -------
+        boolean flag represents the final result of the pipeline.
+        """
+        results = []
+        for idx in range(len(self.tests)):
+            result = QPipeline.execute(
+                func=self.__checks[idx],
+                verbose=self.verbose,
+                error_level=self.__error_levels[idx],
+                **self.__check_params[idx],
+            )
+            if result:
+                results.append(True)
+            else:
+                if self.__error_levels[idx] == "error":
+                    results.append(False)
+                else:
+                    results.append(True)
+        return True if sum(results) == len(self.tests) else False
