@@ -1,4 +1,4 @@
-[interrogate](./badges/interrogate_badge.svg)
+[![interrogate](./badges/interrogate_badge.svg)]
 
 # qprofiler
 
@@ -32,6 +32,8 @@ pip install qprofiler
 
 check the [notebook](notebooks/intro.ipynb) that contains everything about how to use **DataProfiler** module in profiling datasets, and how to use **QTest** module to create quality check tests.
 
+check the [notebook](notebooks/quality_pipeline.ipynb) that contains everything about how to use **QPipeline** 
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
@@ -42,6 +44,8 @@ Please make sure to update tests as appropriate.
 ## Licence
 [MIT](LICENSE)
 
-## New in v0.2.2
+## New in v0.2.3
 
-- Create Quality Pipeline.
+- Create Quality Pipeline(v0.2.2).
+- enhance documentation.
+- add utility method in DataProfiler to .dprofiler structure tree.
