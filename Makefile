@@ -3,3 +3,6 @@ pylint:
 
 test:
 	pytest -v
+
+docstrings:
+	interrogate -v ./qprofiler
