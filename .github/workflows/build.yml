@@ -38,6 +38,6 @@ jobs:
         - name: Run tests
           run: poetry run make test
         - name: Check docstring
-          run: interrogate -v ./qprofiler
+          run: poetry interrogate -v ./qprofiler
         - name: Build Artifacts
           run: poetry build
