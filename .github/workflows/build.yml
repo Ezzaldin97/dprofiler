@@ -37,5 +37,7 @@ jobs:
             poetry run make pylint
         - name: Run tests
           run: poetry run make test
+        - name: Check docstring
+          run: poetry run make docstrings
         - name: Build Artifacts
           run: poetry build

@@ -908,6 +908,13 @@ class QPipeline:
 
     @staticmethod
     def validate_error_level(level: str) -> str:
+        """
+        validate error level
+
+        checks if the passed error level is
+        a warn or error level, if passed argument
+        is something else then raise ValueError
+        """
         if level in ["error", "warn"]:
             return level
         else:
@@ -917,6 +924,24 @@ class QPipeline:
     def validate_checks(
         checks_obj: QTest, check: Callable[..., Dict[str, Union[str, bool]]]
     ) -> Callable[..., bool]:
+        """
+        Validate that methods provided are QTest Check Methods
+
+        Parameters
+        ----------
+        checks_obj: QTest Object
+        instance of QTest Class
+
+        check: Callable
+        QTest Check Methods that will be validated
+        if it is an QTest Attribute then function will
+        return the method.
+
+        Return
+        ------
+        QTest Method if it is a QTest Attribute else
+        will raise TypeError
+        """
         if hasattr(checks_obj, check.__name__):
             return check
         else:
@@ -929,6 +954,9 @@ class QPipeline:
         error_level: str,
         **kwargs,
     ) -> bool:
+        """
+        execute the QTest Check Method, and return the result
+        """
         res = func(**kwargs)
         if verbose:
             if res["res"]:
