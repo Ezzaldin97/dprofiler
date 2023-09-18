@@ -4,6 +4,7 @@ import os
 import ruamel.yaml
 from .utils import Message
 from .scan import ScanData
+from .utils import DirTree
 
 message = Message()
 
@@ -114,3 +115,14 @@ class DataProfiler(ScanData):
             raise FileNotFoundError(
                 f"No Data Profile Exists in profiler with name: {file_name}"
             )
+
+    def profiler_tree(self) -> str:
+        """
+        Generate the File Structure of profiler as tree
+
+        Returns
+        -------
+        str of tree file structure of profiler
+        """
+        profiler_tree = DirTree(self.profiler_config)
+        return profiler_tree.generate()
