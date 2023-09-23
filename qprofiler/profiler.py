@@ -2,9 +2,13 @@ from pathlib import Path
 from typing import Optional, Dict
 import os
 import ruamel.yaml
+from datetime import datetime
+from shutil import rmtree
 from .utils import Message
 from .scan import ScanData
 from .utils import DirTree
+from .metadata import FileSystem
+from .metadata import MetadataDB
 
 message = Message()
 
@@ -65,8 +69,11 @@ class DataProfiler(ScanData):
                 raise FileNotFoundError(f"{self.profiler_path} doesn't exist")
 
         self.profiler_config = _create_config_dir()
+        self._fs = FileSystem(self.profiler_config)
+        self._metadata = MetadataDB(self.profiler_config)
 
     def __str__(self) -> str:
+        """provide .dprofiler path"""
         return f"Profile of:{self.profiler_path}"
 
     def create_profile(
@@ -79,25 +86,71 @@ class DataProfiler(ScanData):
         Parameters
         ----------
         data_profile : dictionary that holds all information of dataset.
-        file_name : file name of the .yml file to avoid duplication issues.
+        file_name : file name of the .yml file.
         override : this is the option to override the information in
         .yml file if exist and rewrite the profile again.
         """
+        project = file_name
         if not (file_name.endswith(".yml") or file_name.endswith(".yaml")):
             file_name = file_name + ".yml"
-        if self.profiler_config.joinpath(file_name).exists():
+        if self._fs.in_use.joinpath(project).joinpath(file_name).exists():
             if override:
-                with open(self.profiler_config.joinpath(file_name), "w") as conf:
+                archieve_ts = self._fs.archive_file(
+                    project=project, file_name=file_name
+                )
+                with open(
+                    self._fs.in_use.joinpath(project).joinpath(file_name), "w"
+                ) as conf:
                     yaml = ruamel.yaml.YAML()
                     yaml.indent(sequence=4, offset=2)
                     yaml.dump(data_profile, conf)
+                self._metadata.update_project(
+                    project=project,
+                    created_at=datetime.now(),
+                    archieved_at=datetime.strptime(archieve_ts, "%Y-%m-%d %H:%M:%S.%f"),
+                )
+
             else:
                 message.printit("profile already exists", "warn")
         else:
-            with open(self.profiler_config.joinpath(file_name), "w") as conf:
+            project_path = self._fs.construct_new(project=project)
+            with open(project_path.joinpath(file_name), "w") as conf:
                 yaml = ruamel.yaml.YAML()
                 yaml.indent(sequence=4, offset=2)
                 yaml.dump(data_profile, conf)
+            self._metadata.add_project(project=project, created_at=datetime.now())
+
+    def update_profile(self, data_profile: Dict, file_name: str) -> None:
+        """
+        update data quality profile.
+
+        archieve quality profile file, and add the new data quality
+        profile (.yml) to in-use directory
+
+        update the metadata of the project as follows:
+        - update the archieve datetime.
+        - insert a new record with the new creation datetime.
+
+        Parameters
+        ----------
+        data_profile : dictionary that holds all information of dataset.
+
+        file_name : file name of the .yml file,
+        currently the project name is same as file name.
+        """
+        project = file_name
+        if not (file_name.endswith(".yml") or file_name.endswith(".yaml")):
+            file_name = file_name + ".yml"
+        archieve_ts = self._fs.archive_file(project=project, file_name=file_name)
+        with open(self._fs.in_use.joinpath(project).joinpath(file_name), "w") as conf:
+            yaml = ruamel.yaml.YAML()
+            yaml.indent(sequence=4, offset=2)
+            yaml.dump(data_profile, conf)
+        self._metadata.update_project(
+            project=project,
+            created_at=datetime.now(),
+            archieved_at=datetime.strptime(archieve_ts, "%Y-%m-%d %H:%M:%S.%f"),
+        )
 
     def del_profile(self, file_name: str) -> None:
         """
@@ -107,14 +160,13 @@ class DataProfiler(ScanData):
         ----------
         file_name : file name that will be deleted.
         """
-        try:
-            if not (file_name.endswith(".yml") or file_name.endswith(".yaml")):
-                file_name = file_name + ".yml"
-            self.profiler_config.joinpath(file_name).unlink()
-        except FileNotFoundError:
-            raise FileNotFoundError(
-                f"No Data Profile Exists in profiler with name: {file_name}"
-            )
+        self._fs.del_project(project=file_name)
+        self._metadata.del_project(project=file_name)
+
+    def format_profiler(self) -> None:
+        """Remove .dprofiler from you system."""
+        rmtree(self.profiler_config)
+        message.printit("profiler removed successfully from your file system.")
 
     def profiler_tree(self) -> str:
         """
@@ -126,3 +178,9 @@ class DataProfiler(ScanData):
         """
         profiler_tree = DirTree(self.profiler_config)
         return profiler_tree.generate()
+
+    def profiler_metadata(self) -> None:
+        """
+        get metadata of the stored quality profiles
+        """
+        self._metadata.get_metadata()
