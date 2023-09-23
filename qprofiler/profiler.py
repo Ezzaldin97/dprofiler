@@ -73,7 +73,7 @@ class DataProfiler(ScanData):
         self._metadata = MetadataDB(self.profiler_config)
 
     def __str__(self) -> str:
-        """ provide .dprofiler path """
+        """provide .dprofiler path"""
         return f"Profile of:{self.profiler_path}"
 
     def create_profile(
@@ -164,7 +164,7 @@ class DataProfiler(ScanData):
         self._metadata.del_project(project=file_name)
 
     def format_profiler(self) -> None:
-        """ Remove .dprofiler from you system. """
+        """Remove .dprofiler from you system."""
         rmtree(self.profiler_config)
         message.printit("profiler removed successfully from your file system.")
 
