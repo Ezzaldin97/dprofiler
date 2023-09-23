@@ -49,3 +49,9 @@ Please make sure to update tests as appropriate.
 - Create Quality Pipeline(v0.2.2).
 - enhance documentation.
 - add utility method in DataProfiler to .dprofiler structure tree.
+
+## New in v0.3.0
+
+- Modify file structure of .dprofiler.
+- add Metadata Module of .dprofiler.
+- modify test cases.

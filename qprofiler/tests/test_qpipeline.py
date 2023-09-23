@@ -22,7 +22,11 @@ def profiler() -> DataProfiler:
 
 @pytest.fixture
 def checks(profiler: DataProfiler) -> QTest:
-    return QTest(profile_path=profiler.profiler_config.joinpath("reference.yml"))
+    return QTest(
+        profile_path=profiler.profiler_config.joinpath("in_use")
+        .joinpath("reference")
+        .joinpath("reference.yml")
+    )
 
 
 @pytest.fixture

@@ -21,7 +21,11 @@ def profiler() -> DataProfiler:
 
 @pytest.fixture
 def checks(profiler: DataProfiler) -> QTest:
-    return QTest(profile_path=profiler.profiler_config.joinpath("reference.yml"))
+    return QTest(
+        profile_path=profiler.profiler_config.joinpath("in_use")
+        .joinpath("reference")
+        .joinpath("reference.yml")
+    )
 
 
 @pytest.fixture
@@ -30,12 +34,18 @@ def test_profile(checks: QTest) -> Dict:
 
 
 def test_profile_path_attribute(checks: QTest, profiler: DataProfiler) -> None:
-    assert checks.profile_path == profiler.profiler_config.joinpath("reference.yml")
+    assert checks.profile_path == profiler.profiler_config.joinpath("in_use").joinpath(
+        "reference"
+    ).joinpath("reference.yml")
 
 
 def test_exception_when_wrong_profile_path(profiler: DataProfiler) -> None:
     with pytest.raises(FileNotFoundError):
-        QTest(profile_path=profiler.profiler_config.joinpath("refernce.yml"))
+        QTest(
+            profile_path=profiler.profiler_config.joinpath("in_use")
+            .joinpath("reference")
+            .joinpath("refernce.yml")
+        )
 
 
 def test_number_of_columns_true(checks: QTest) -> None:
