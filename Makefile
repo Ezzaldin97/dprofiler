@@ -2,7 +2,7 @@ pylint:
 	bash linting.sh
 
 test:
-	pytest -v
+	bash testing.sh
 
 docstrings:
 	interrogate -v ./qprofiler
